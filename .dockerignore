@@ -1,0 +1,28 @@
+# dependencies
+/node_modules
+
+# production
+/build
+
+# lock package manager
+yarn.lock
+package-lock.json
+
+# misca
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# log
+yarn-error.log
+
+# code
+.vscode
+/target
+
+# Docker 
+docker-compose.yml
+Dockerfile
+.dockerignore
