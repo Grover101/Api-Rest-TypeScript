@@ -12,8 +12,20 @@ const getTweets = async (): Promise<Tweet[]> => {
 }
 
 const getTweetId = async (id: string): Promise<Tweet | null> => {
-    const response = await TweetModel.findOne({ _id: id })
+    const response = await TweetModel.findById(id).lean()
     return response
 }
 
-export { insertTweet, getTweets, getTweetId }
+const updateTweet = async (id: string, data: Tweet): Promise<Tweet | null> => {
+    const response = await TweetModel.findOneAndUpdate({ _id: id }, data, {
+        new: true
+    })
+    return response
+}
+
+const deleteTweet = async (id: string): Promise<boolean> => {
+    const response = await TweetModel.deleteOne({ _id: id })
+    return !(response.deletedCount === 0)
+}
+
+export { insertTweet, getTweets, getTweetId, updateTweet, deleteTweet }
