@@ -3,6 +3,7 @@ version: '3.9'
 services:
   mongo:
     image: mongo
+    restart: always
     ports:
       - ${PORT_MONGO}:${PORT_MONGO_DOCKER}
     volumes:
