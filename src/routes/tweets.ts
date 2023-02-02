@@ -1,13 +1,13 @@
-import ControllerTweet from '@controllers/ControllerTweet'
+import tweetController from '@controllers/tweet.controller'
 import { Router } from 'express'
 
 const router = Router()
 
-router.get('/', ControllerTweet.index)
-router.get('/:id', ControllerTweet.show)
-router.post('/', ControllerTweet.create)
-router.post('/like', ControllerTweet.createLike)
-router.put('/:id', ControllerTweet.update)
-router.delete('/:id', ControllerTweet.delete)
+router.get('/', tweetController.index)
+router.get('/:id', tweetController.show)
+router.post('/', tweetController.create)
+router.post('/like', tweetController.createLike)
+router.put('/:id', tweetController.update)
+router.delete('/:id', tweetController.delete)
 
 export { router }
