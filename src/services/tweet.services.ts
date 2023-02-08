@@ -1,5 +1,4 @@
-import TweetModel from '@models/tweet'
-import { type Tweet } from '../interfaces/tweet.interface'
+import TweetModel, { type Tweet } from '@models/tweet'
 
 const insertTweet = async (tweet: Tweet): Promise<Tweet> => {
     const response = await TweetModel.create(tweet)
