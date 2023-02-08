@@ -20,8 +20,7 @@ export default {
     async show({ params }: Request, res: Response) {
         try {
             const user = await getUserId(params.id)
-            const data = user !== undefined ? user : 'Not Found'
-            return res.status(200).json(data)
+            return res.status(200).json(user ?? { message: 'Not Found User' })
         } catch (error) {
             handleHttp(res, 'Error in the request')
         }
@@ -37,7 +36,7 @@ export default {
     async update({ body, params }: Request, res: Response) {
         try {
             const user = await updateUser(params.id, body)
-            return res.status(200).json(user)
+            return res.status(200).json(user ?? { message: 'Not found User' })
         } catch (error) {
             handleHttp(res, 'Error in the request')
         }
@@ -48,7 +47,7 @@ export default {
             return user
                 ? res.status(200).json({ message: 'Tweet deleted' })
                 : res.status(404).json({
-                      message: 'No record found'
+                      message: 'Not found User'
                   })
         } catch (error) {
             handleHttp(res, 'Error in the request')
