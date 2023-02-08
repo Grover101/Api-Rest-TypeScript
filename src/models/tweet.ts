@@ -1,18 +1,9 @@
-import { type Tweet } from '@interfaces/tweet.interface'
-import { model, Schema } from 'mongoose'
+import { getModelForClass, prop } from '@typegoose/typegoose'
+import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
+export class Tweet extends TimeStamps {
+    @prop({ type: String, required: true })
+    message: string
+}
 
-const TweetSchema = new Schema<Tweet>(
-    {
-        message: {
-            type: String,
-            required: true
-        }
-    },
-    {
-        timestamps: true,
-        versionKey: false
-    }
-)
-const TweetModel = model<Tweet>('tweets', TweetSchema)
-
+const TweetModel = getModelForClass(Tweet)
 export default TweetModel
