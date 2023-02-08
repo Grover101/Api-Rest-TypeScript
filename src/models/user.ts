@@ -10,16 +10,16 @@ export class User {
     @prop({ type: String, unique: true, required: true, trim: true })
     email: string
 
-    @prop({ type: String })
+    @prop({ type: String, default: '' })
     description: string
 
-    @prop({ type: String })
+    @prop({ type: String, default: '' })
     website: string
 
-    @prop({ type: String })
+    @prop({ type: String, default: '' })
     role: string
 
-    @prop({ type: String })
+    @prop({ type: String, default: '' })
     photoUrl: string
 
     @prop({ type: String, required: true, minlength: 8 })
