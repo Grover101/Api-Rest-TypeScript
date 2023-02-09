@@ -4,14 +4,14 @@ import { readdirSync } from 'fs'
 const PATH_ROUTER = `${__dirname}`
 const router = Router()
 
-const cleanFileName = (fileName: string): string => {
-    const file = fileName.split('.').shift()
-    return file ?? 'index'
+const cleanFileName = (fileName: string): string | undefined => {
+    const file: string | undefined = fileName.split('.').shift()
+    return file
 }
 
 readdirSync(PATH_ROUTER).forEach(fileName => {
-    const cleanName: string = cleanFileName(fileName)
-    if (cleanName !== 'index') {
+    const cleanName: string | undefined = cleanFileName(fileName)
+    if (cleanName !== 'index' && cleanName !== undefined) {
         import(`./${cleanName}`)
             .then(moduleRouter => {
                 router.use(`/${cleanName}`, moduleRouter.router)
