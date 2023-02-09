@@ -5,8 +5,10 @@ declare global {
         interface ProcessEnv {
             PORT?: number
             HOST: string
-            MONGO_URI: string
-            ENV: 'test' | 'dev' | 'prod'
+            MONGO_URI_DEV: string
+            MONGO_URI_TEST: string
+            MONGO_URI_PRO: string
+            NODE_ENV: 'test' | 'dev' | 'prod'
         }
     }
 }
