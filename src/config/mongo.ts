@@ -11,3 +11,6 @@ export const connect = async (): Promise<void> => {
     mongoose.set('strictQuery', true)
     await mongoose.connect(DB_URI)
 }
+
+export const close = async (): Promise<void> =>
+    await mongoose.connection.close()
