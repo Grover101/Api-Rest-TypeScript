@@ -3,7 +3,7 @@ import request from 'supertest'
 import app from '@app'
 import { connect, close } from '@config/mongo'
 import TweetModel from '@models/tweet'
-import { tweetInit } from '../helper/tweet'
+import { getAllMessageFromTweets, tweetInit } from '../helper/tweet'
 
 const api = request(app)
 
@@ -27,6 +27,11 @@ describe('GET all /tweets', () => {
             .expect('Content-Type', /application\/json/)
             .expect(200)
         expect(response.body).toHaveLength(tweetInit.length)
+    })
+
+    test('El tweet "Prueba para los test" se encuentra', async () => {
+        const { messages } = await getAllMessageFromTweets(api)
+        expect(messages).toContain('Prueba para los test')
     })
     // [ ] GET /tweets/:id
 })
