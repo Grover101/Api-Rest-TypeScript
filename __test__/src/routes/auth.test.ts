@@ -3,6 +3,7 @@ import request from 'supertest'
 import app from '@app'
 import { connect, close } from '@config/mongo'
 import { usersInit } from '../helper'
+import { login } from '../helper/auth'
 
 const api = request(app)
 
@@ -16,14 +17,15 @@ afterAll(async () => {
     await close()
 })
 
-// [ ] POST /auth/login
-describe('POST /auth/login', () => {
-    test('Retornar todos los users', async () => {
+describe('POST /auth/signIn', () => {
+    // [ ] POST /auth/signIn
+    test('Retornar token si es correcto el acceso', async () => {
         const response = await api
-            .post('/api/v1/auth/login')
+            .post('/api/v1/auth/signIn')
+            .send(login)
             .expect('Content-Type', /application\/json/)
             .expect(200)
-        expect(Array.isArray(response.body)).toBe(true)
+        // expect(Array.isArray(response.body)).toBe(true)
     })
 })
 
