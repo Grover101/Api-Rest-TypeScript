@@ -1,8 +1,13 @@
 import { DocumentType, getModelForClass, prop } from '@typegoose/typegoose'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses'
 import bcrypt from 'bcryptjs'
+import { Types } from 'mongoose'
 
 export class User extends TimeStamps {
+    _id!: Types.ObjectId
+
+    id!: string
+
     @prop({ type: String, default: '' })
     name: string
 
