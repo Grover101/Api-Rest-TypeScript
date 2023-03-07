@@ -1,3 +1,6 @@
+import AuthModel, { Auth } from '@models/auth'
+import UserModel, { type User } from '@models/user'
+
 export const userInit = [
     {
         username: 'Tester',
@@ -21,4 +24,13 @@ export const login = {
     password: '12345678'
 }
 
-export const TOKEN = '123456789'
+export const TOKEN = async (): Promise<Auth | null> => {
+    const user: User | null = await UserModel.findOne({ email: login.email })
+    // ! temp
+    await AuthModel.create({
+        token: '234567890',
+        expire: new Date(),
+        user: user?.id
+    })
+    return await AuthModel.findOne({ user: user?.id }).populate('user')
+}
