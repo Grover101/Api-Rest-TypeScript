@@ -1,6 +1,17 @@
 import AuthModel, { Auth } from '@models/auth'
 import UserModel, { type User } from '@models/user'
 
+export const userTest = {
+    name: 'New User',
+    username: 'NewUser',
+    email: 'new@user.com',
+    description: 'Es un nuevo usuario',
+    website: 'https://user.new.com',
+    role: '',
+    photoUrl: 'https://xsgames.co/randomusers/avatar.php?g=male&hash=1',
+    password: '123456789'
+}
+
 export const userInit = [
     {
         username: 'Tester',
