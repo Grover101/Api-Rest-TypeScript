@@ -2,8 +2,14 @@ import request from 'supertest'
 
 import app from '@app'
 import { connect, close } from '@config/mongo'
-import { TOKEN, userInit } from '../helper/auth'
-import { ResponseMessage, authUser, usersInit } from '../helper'
+import { TOKEN, userInit, userTest } from '../helper/auth'
+import {
+    ResponseMessage,
+    authUser,
+    errorUsers,
+    getAllUsers,
+    usersInit
+} from '../helper'
 import AuthModel, { Auth } from '@models/auth'
 import { User } from '@models/user'
 
@@ -25,7 +31,7 @@ afterAll(async () => {
 
 // ! Todo con token
 describe('GET /users', () => {
-    // [] GET /users/all sin token
+    // [ ] GET /users/all sin token
     test('Peticion de User sin Token', async () => {
         const response = await api
             .get('/api/v1/users')
@@ -35,7 +41,7 @@ describe('GET /users', () => {
         expect('Token is required').toEqual(message)
     })
 
-    // [] GET /users/all con token
+    // [ ] GET /users/all con token
     test('Retornar todos los users', async () => {
         const response = await api
             .get('/api/v1/users')
@@ -45,7 +51,7 @@ describe('GET /users', () => {
         expect(Array.isArray(response.body)).toBe(true)
     })
 
-    // [] GET /users/all incluede username
+    // [ ] GET /users/all incluede username
     test('El usuario con username "Tester" se encuentra', async () => {
         const response = await api
             .get('/api/v1/users')
@@ -58,7 +64,7 @@ describe('GET /users', () => {
 })
 
 describe('GET /users/:id', () => {
-    // [] GET /users/:id sin token
+    // [ ] GET /users/:id sin token
     test('Peticion de User sin Token', async () => {
         const responseUsers = await api
             .get('/api/v1/users/')
@@ -88,7 +94,7 @@ describe('GET /users/:id', () => {
         expect(response.body.username).toEqual(user.username)
     })
 
-    // [] GET /users/:id no encontrado
+    // [ ] GET /users/:id no encontrado
     test('Usuario no encontrado', async () => {
         const response = await api
             .get('/api/v1/users/6408e7c632af07fb2e554d2a')
@@ -96,6 +102,60 @@ describe('GET /users/:id', () => {
             .expect('Content-Type', /application\/json/)
             .expect(404)
         expect(response.body.message).toBe('Not Found User')
+    })
+})
+
+// [ ] POST /users
+describe('POST /users', () => {
+    // [ ] Create User sin token
+    test('Fallo al crear un Usuario sin token (Error)', async () => {
+        await api
+            .post('/api/v1/users')
+            .send(userTest)
+            .expect(403)
+            .expect('Content-Type', /application\/json/)
+    })
+
+    // [ ] Create User con token
+    test('Creacion de un Usuario', async () => {
+        await api
+            .post('/api/v1/users')
+            .send(userTest)
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const { users } = await getAllUsers(api, token?.token || '')
+
+        expect(users).toContain(userTest.username)
+    })
+
+    // [ ] Error User Repetido
+    test('Error al crear un Usuario repetida', async () => {
+        await api
+            .post('/api/v1/users')
+            .send(userTest)
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        const { users } = await getAllUsers(api, token?.token || '')
+
+        expect(users).toContain(userTest.username)
+    })
+
+    // [ ] Falta campo
+    test('Falta de campos en la creacion', async () => {
+        const newFilm = {}
+
+        const response = await api
+            .post('/api/v1/users')
+            .send(newFilm)
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(response.body).toEqual(errorUsers)
     })
 })
 
