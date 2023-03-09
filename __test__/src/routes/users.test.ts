@@ -8,6 +8,7 @@ import {
     authUser,
     errorUsers,
     getAllUsers,
+    ErrorMessage,
     usersInit
 } from '../helper'
 import AuthModel, { Auth } from '@models/auth'
@@ -109,11 +110,13 @@ describe('GET /users/:id', () => {
 describe('POST /users', () => {
     // [ ] Create User sin token
     test('Fallo al crear un Usuario sin token (Error)', async () => {
-        await api
+        const response = await api
             .post('/api/v1/users')
             .send(userTest)
             .expect(403)
             .expect('Content-Type', /application\/json/)
+        const { message }: ResponseMessage = await response.body
+        expect('Token is required').toEqual(message)
     })
 
     // [ ] Create User con token
@@ -159,6 +162,60 @@ describe('POST /users', () => {
     })
 })
 
+// [ ] PUT /users/:id
+describe('PUT /users/:id', () => {
+    test('Fallo al actualizar un Usuario sin token (Error)', async () => {
+        const response = await api
+            .put('/api/v1/users/6408e7c632af07fb2e554d2a')
+            .send(userTest)
+            .expect(403)
+            .expect('Content-Type', /application\/json/)
+        const { message }: ResponseMessage = await response.body
+        expect('Token is required').toEqual(message)
+    })
+
+    test('Fallo al actualizar, Usuario no encontrado (Error)', async () => {
+        const response = await api
+            .put('/api/v1/users/6408e7c632af07fb2e554d2a')
+            .send(userTest)
+            .expect(404)
+            .expect('Content-Type', /application\/json/)
+        const { message }: ResponseMessage = await response.body
+        expect('Not Found User').toEqual(message)
+    })
+
+    test('Update Usuario con id, uso de token', async () => {
+        const responseUsers = await api
+            .get('/api/v1/users')
+            .auth(token?.token || '', { type: 'bearer' })
+        const user: User = responseUsers.body[0]
+
+        const updateUser = {
+            username: user.username + '2'
+        }
+
+        await api
+            .put(`/api/v1/users/${user._id}`)
+            .send(updateUser)
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const { users } = await getAllUsers(api, token?.token || '')
+        expect(users).toContain(updateUser.username)
+    })
+
+    test('Id invalido', async () => {
+        const response = await api
+            .put('/api/v1/users/we')
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+        expect(
+            response.body.map((error: ErrorMessage) => error.error)
+        ).toContain('Invalid id')
+    })
+})
+
 // [ ] DELETE /users/:id
-// [ ] PUT /users/profile
 // [ ] POST /users/uploadprofilephoto
