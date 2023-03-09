@@ -6,6 +6,11 @@ export interface ResponseMessage {
     message: string
 }
 
+export interface ErrorMessage {
+    error: string
+    field: string
+}
+
 interface AuthUser {
     token: string
     message: string
