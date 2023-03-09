@@ -188,7 +188,7 @@ describe('PUT /users/:id', () => {
         const responseUsers = await api
             .get('/api/v1/users')
             .auth(token?.token || '', { type: 'bearer' })
-        const user: User = responseUsers.body[0]
+        const user: User = responseUsers.body.pop()
 
         const updateUser = {
             username: user.username + '2'
@@ -218,4 +218,52 @@ describe('PUT /users/:id', () => {
 })
 
 // [ ] DELETE /users/:id
+describe('DELETE /users', () => {
+    test('Fallo al eliminar un Usuario sin token (Error)', async () => {
+        const response = await api
+            .put('/api/v1/users/6408e7c632af07fb2e554d2a')
+            .send(userTest)
+            .expect(403)
+            .expect('Content-Type', /application\/json/)
+        const { message }: ResponseMessage = await response.body
+        expect('Token is required').toEqual(message)
+    })
+
+    test('Eliminacion de un Usuario', async () => {
+        const responseUsers = await api
+            .get('/api/v1/users')
+            .auth(token?.token || '', { type: 'bearer' })
+        const user: User = responseUsers.body.pop()
+
+        await api
+            .delete(`/api/v1/users/${user._id}`)
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const { users } = await getAllUsers(api, token?.token || '')
+        expect(users).not.toContain(user.username)
+    })
+
+    test('Id invalido', async () => {
+        const response = await api
+            .delete('/api/v1/users/we')
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(400)
+
+        expect(
+            response.body.map((error: ErrorMessage) => error.error)
+        ).toContain('Invalid id')
+    })
+
+    test('Id no existe', async () => {
+        const response = await api
+            .delete('/api/v1/users/6408e7c632af07fb2e554d2a')
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(404)
+
+        expect(response.body.message).toContain('Not found User')
+    })
+})
+
 // [ ] POST /users/uploadprofilephoto
