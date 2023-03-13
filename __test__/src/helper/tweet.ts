@@ -14,9 +14,12 @@ export const tweetInit: Tweet[] = [
 ]
 
 export const getAllMessageFromTweets = async (
-    api: supertest.SuperTest<supertest.Test>
+    api: supertest.SuperTest<supertest.Test>,
+    token: string
 ) => {
-    const response = await api.get('/api/v1/tweets')
+    const response = await api
+        .get('/api/v1/tweets')
+        .auth(token, { type: 'bearer' })
     return {
         messages: response.body.map((tweet: Tweet) => tweet.message),
         response
