@@ -6,7 +6,12 @@ import TweetModel, { type Tweet } from '@models/tweet'
 import { getAllMessageFromTweets, tweetInit, tweetTest } from '../helper/tweet'
 import { TOKEN } from '../helper/auth'
 import AuthModel, { Auth } from '@models/auth'
-import { ResponseMessage, authUser, messageErrors } from '../helper'
+import {
+    ErrorMessage,
+    ResponseMessage,
+    authUser,
+    messageErrors
+} from '../helper'
 
 const api = request(app)
 let token: Auth | null
@@ -39,14 +44,14 @@ describe('GET all /tweets', () => {
     // [ ] GET /tweets/all con token
     test('Retornar todos los users', async () => {
         const response = await api
-            .get('/api/v1/users')
+            .get('/api/v1/tweets')
             .auth(token?.token || '', { type: 'bearer' })
             .expect('Content-Type', /application\/json/)
             .expect(200)
         expect(Array.isArray(response.body)).toBe(true)
     })
 
-    // [ ] GET /users/all Tweet encontrado
+    // [ ] GET /tweets/all Tweet encontrado
     test('El usuario con username "Tester" se encuentra', async () => {
         const { messages } = await getAllMessageFromTweets(
             api,
@@ -73,7 +78,7 @@ describe('GET /tweets/:id', () => {
         expect('Token is required').toEqual(message)
     })
 
-    // [ ] GET /users/:id con token
+    // [ ] GET /tweets/:id con token
     test('Retornar todos los Tweets', async () => {
         const responseTweets = await api
             .get('/api/v1/tweets/')
@@ -105,7 +110,7 @@ describe('GET /tweets/:id', () => {
 })
 
 // [ ] POST /tweets
-describe('POST /users', () => {
+describe('POST /tweets', () => {
     // [ ] Create User sin token
     test('Fallo al crear un Tweet sin token (Error)', async () => {
         const response = await api
@@ -148,5 +153,112 @@ describe('POST /users', () => {
 })
 
 // [ ] PUT /tweets/:id
+describe('PUT /tweets/:id', () => {
+    test.skip('Fallo al actualizar un Tweet sin token (Error)', async () => {
+        const response = await api
+            .put('/api/v1/tweets/6408e7c632af07fb2e554d2a')
+            .send(tweetTest)
+            .expect(403)
+            .expect('Content-Type', /application\/json/)
+        const { message }: ResponseMessage = await response.body
+        expect('Token is required').toEqual(message)
+    })
+
+    test('Fallo al actualizar, Tweet no encontrado (Error)', async () => {
+        const response = await api
+            .put('/api/v1/tweets/6408e7c632af07fb2e554d2a')
+            .send(tweetTest)
+            .expect(404)
+            .expect('Content-Type', /application\/json/)
+        const { message }: ResponseMessage = await response.body
+        expect('Not Found Tweet').toEqual(message)
+    })
+
+    test('Update Tweet con id, uso de token', async () => {
+        const responseTweets = await api
+            .get('/api/v1/tweets')
+            .auth(token?.token || '', { type: 'bearer' })
+        const tweet: Tweet = responseTweets.body.pop()
+
+        const updateTweet = {
+            message: tweet.message + '2'
+        }
+
+        await api
+            .put(`/api/v1/tweets/${tweet._id}`)
+            .send(updateTweet)
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const { messages } = await getAllMessageFromTweets(
+            api,
+            token?.token || ''
+        )
+        expect(messages).toContain(tweet.message)
+    })
+
+    test('Id invalido', async () => {
+        const response = await api
+            .put('/api/v1/tweets/we')
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+        expect(
+            response.body.map((error: ErrorMessage) => error.error)
+        ).toContain('Invalid id')
+    })
+})
+
 // [ ] DELETE /tweets/:id
+describe('DELETE /tweets/:id', () => {
+    test('Fallo al eliminar un Tweet sin token (Error)', async () => {
+        const response = await api
+            .delete('/api/v1/tweets/6408e7c632af07fb2e554d2a')
+            .expect(403)
+            .expect('Content-Type', /application\/json/)
+        const { message }: ResponseMessage = await response.body
+        expect('Token is required').toEqual(message)
+    })
+
+    test('Eliminacion de un Tweet', async () => {
+        const responseUsers = await api
+            .get('/api/v1/tweets')
+            .auth(token?.token || '', { type: 'bearer' })
+        const tweet: Tweet = responseUsers.body.pop()
+
+        await api
+            .delete(`/api/v1/tweets/${tweet._id}`)
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const { messages } = await getAllMessageFromTweets(
+            api,
+            token?.token || ''
+        )
+        expect(messages).not.toContain(tweet.message)
+    })
+
+    test('Id invalido', async () => {
+        const response = await api
+            .delete('/api/v1/tweets/we')
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(400)
+
+        expect(
+            response.body.map((error: ErrorMessage) => error.error)
+        ).toContain('Invalid id')
+    })
+
+    test('Id no existe', async () => {
+        const response = await api
+            .delete('/api/v1/tweets/6408e7c632af07fb2e554d2a')
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(404)
+
+        expect(response.body.message).toContain('Not found Tweet')
+    })
+})
+
 // [ ] POST /tweets/like/:id
