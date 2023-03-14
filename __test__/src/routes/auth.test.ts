@@ -25,11 +25,27 @@ describe('POST /auth/signIn', () => {
             .send(login)
             .expect('Content-Type', /application\/json/)
             .expect(200)
-        // expect(Array.isArray(response.body)).toBe(true)
+        expect(response.body.message).toBe('Login Successful')
     })
 })
 
-// [ ] POST /auth/signup
+// [ ] POST /auth/signUp
+describe('POST /auth/signUp', () => {
+    // [ ] POST /auth/signIn
+    test('Retornar token si es correcto el acceso', async () => {
+        const response = await api
+            .post('/api/v1/auth/signUp')
+            .send({
+                email: ' newTest@gmail.com',
+                password: '12345678',
+                username: 'New Test'
+            })
+            .expect('Content-Type', /application\/json/)
+            .expect(200)
+        expect(response.body.message).toEqual('Successful Registration')
+    })
+})
+
 // [ ] GET /auth/active/{username}/{code}
 // [ ] POST /auth/forgot
 // [ ] POST /auth/resetpassword
