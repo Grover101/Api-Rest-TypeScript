@@ -13,6 +13,10 @@ export const tweetInit: Tweet[] = [
     })
 ]
 
+export const tweetTest = {
+    message: 'New message for test'
+}
+
 export const getAllMessageFromTweets = async (
     api: supertest.SuperTest<supertest.Test>,
     token: string
