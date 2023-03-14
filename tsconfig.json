@@ -6,8 +6,10 @@
         "module": "commonjs",
         "strict": true,
         "strictPropertyInitialization": false,
-        "rootDir": "./src",
+        "rootDir": "./",
         "allowJs": true,
+        "moduleResolution": "node",
+        "checkJs": true,
         "outDir": "build",
         "baseUrl": ".",
         "paths": {
@@ -17,7 +19,8 @@
             "@config/*": ["./src/config/*"],
             "@utils/*": ["./src/utils/*"],
             "@interfaces/*": ["./src/interfaces/*"],
-            "@services/*": ["./src/services/*"]
+            "@services/*": ["./src/services/*"],
+            "@app": ["./src/app.ts"]
         },
         "typeRoots": ["./node_modules/@types", "./src/config/@types"],
         "esModuleInterop": true,
@@ -25,6 +28,12 @@
         "skipLibCheck": true,
         "strictNullChecks": true
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
+    "include": ["src/**/*.ts", "__test__/**/*.ts"],
+    "exclude": [
+        "node_modules",
+        "./coverage",
+        "./build",
+        "jest.config.js",
+        "build1"
+    ]
 }

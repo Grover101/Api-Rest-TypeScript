@@ -4,12 +4,12 @@
         "node": true
     },
     "extends": [
-        "standard-with-typescript",
+        // "standard-with-typescript",
         "plugin:prettier/recommended",
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended"
     ],
-    "plugins": ["@typescript-eslint", "import", "prettier"],
+    "plugins": ["@typescript-eslint", "import", "prettier", "jest"],
     "overrides": [],
     "parserOptions": {
         "ecmaVersion": "latest",
