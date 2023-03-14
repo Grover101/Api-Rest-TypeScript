@@ -3,10 +3,10 @@ import request from 'supertest'
 import app from '@app'
 import { connect, close } from '@config/mongo'
 import TweetModel, { type Tweet } from '@models/tweet'
-import { getAllMessageFromTweets, tweetInit } from '../helper/tweet'
+import { getAllMessageFromTweets, tweetInit, tweetTest } from '../helper/tweet'
 import { TOKEN } from '../helper/auth'
 import AuthModel, { Auth } from '@models/auth'
-import { ResponseMessage, authUser } from '../helper'
+import { ResponseMessage, authUser, messageErrors } from '../helper'
 
 const api = request(app)
 let token: Auth | null
@@ -104,7 +104,49 @@ describe('GET /tweets/:id', () => {
     })
 })
 
+// [ ] POST /tweets
+describe('POST /users', () => {
+    // [ ] Create User sin token
+    test('Fallo al crear un Tweet sin token (Error)', async () => {
+        const response = await api
+            .post('/api/v1/tweets')
+            .send(tweetTest)
+            .expect(403)
+            .expect('Content-Type', /application\/json/)
+        const { message }: ResponseMessage = await response.body
+        expect('Token is required').toEqual(message)
+    })
+
+    // [ ] Create User con token
+    test('Creacion de un Usuario', async () => {
+        await api
+            .post('/api/v1/tweets')
+            .send(tweetTest)
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
+        const { messages } = await getAllMessageFromTweets(
+            api,
+            token?.token || ''
+        )
+
+        expect(messages).toContain(tweetTest.message)
+    })
+
+    // [ ] Falta campo
+    test('Falta de campos en la creacion', async () => {
+        const response = await api
+            .post('/api/v1/tweets')
+            .send({})
+            .auth(token?.token || '', { type: 'bearer' })
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
+
+        expect(response.body).toEqual(messageErrors)
+    })
+})
+
 // [ ] PUT /tweets/:id
 // [ ] DELETE /tweets/:id
-// [ ] POST /tweets/create
 // [ ] POST /tweets/like/:id
