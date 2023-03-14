@@ -6,7 +6,7 @@ import { TOKEN, userInit, userTest } from '../helper/auth'
 import {
     ResponseMessage,
     authUser,
-    errorUsers,
+    messageErrors,
     getAllUsers,
     ErrorMessage,
     usersInit
@@ -158,7 +158,7 @@ describe('POST /users', () => {
             .expect(400)
             .expect('Content-Type', /application\/json/)
 
-        expect(response.body).toEqual(errorUsers)
+        expect(response.body).toEqual(messageErrors)
     })
 })
 

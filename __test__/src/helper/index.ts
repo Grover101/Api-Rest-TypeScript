@@ -41,7 +41,7 @@ export const getAllUsers = async (
     return { users: response.body.map((user: User) => user.username) }
 }
 
-export const errorUsers = [
+export const messageErrors = [
     { field: 'username', message: 'Username is required' },
     { field: 'email', message: 'Email is required' },
     { field: 'password', message: 'password is invalid' }
