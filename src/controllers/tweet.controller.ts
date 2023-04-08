@@ -20,20 +20,17 @@ export default {
     async show({ params }: Request, res: Response) {
         try {
             const tweet = await getTweetId(params.id)
-            const data = tweet !== undefined ? tweet : 'Not Found'
-            console.log('Show: ', data)
-
-            return res.status(200).json(tweet)
+            return tweet
+                ? res.status(200).json(tweet)
+                : res.status(404).json({ message: 'Not Found Tweet' })
         } catch (error) {
-            console.log(error)
-
             handleHttp(res, 'Error in the request')
         }
     },
     async create({ body }: Request, res: Response) {
         try {
             const tweet = await insertTweet(body)
-            return res.status(200).json(tweet)
+            return res.status(201).json(tweet)
         } catch (error) {
             handleHttp(res, 'Error in the request', error)
         }
@@ -49,7 +46,9 @@ export default {
     async update({ body, params }: Request, res: Response) {
         try {
             const tweet = await updateTweet(params.id, body)
-            return res.status(200).json(tweet)
+            return tweet
+                ? res.status(200).json(tweet)
+                : res.status(404).json({ message: 'Not Found Tweet' })
         } catch (error) {
             handleHttp(res, 'Error in the request')
         }
@@ -60,7 +59,7 @@ export default {
             return tweet
                 ? res.status(200).json({ message: 'Tweet deleted' })
                 : res.status(404).json({
-                      message: 'No record found'
+                      message: 'Not found Tweet'
                   })
         } catch (error) {
             handleHttp(res, 'Error in the request')
