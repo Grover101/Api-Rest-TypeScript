@@ -11,11 +11,11 @@ export class Tweet extends TimeStamps {
     @prop({ type: String, required: true })
     message: string
 
-    @prop({ ref: () => User })
+    @prop({ ref: () => User, required: true })
     public user: Ref<User>
 
     @prop({ ref: () => User })
-    public likes: Ref<User[]>
+    public likes?: Ref<User | null>[]
 }
 
 const TweetModel = getModelForClass(Tweet)
