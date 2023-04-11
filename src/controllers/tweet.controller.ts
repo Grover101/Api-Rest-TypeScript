@@ -2,6 +2,7 @@ import {
     deleteTweet,
     getTweetId,
     getTweets,
+    insertLikes,
     insertTweet,
     updateTweet
 } from '@services/tweet.services'
@@ -35,10 +36,11 @@ export default {
             handleHttp(res, 'Error in the request', error)
         }
     },
-    createLike(_req: Request, res: Response) {
+    async createLike({ body, params }: Request, res: Response) {
         try {
-            const option = 'hola'
-            return res.status(200).json({ all: option })
+            // [ ] Pasar id user por token y cuando este autenticado
+            const tweet = await insertLikes(body.idUser, params.id)
+            return res.status(200).json({ tweet })
         } catch (error) {
             handleHttp(res, 'Error in the request')
         }
