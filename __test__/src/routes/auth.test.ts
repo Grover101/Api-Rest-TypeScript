@@ -58,13 +58,51 @@ describe('POST /auth/signUp', () => {
         const response = await api
             .post('/api/v1/auth/signUp')
             .send({
-                email: ' newTest@gmail.com',
+                email: 'newTest@gmail.com',
                 password: '12345678',
                 username: 'New Test'
             })
             .expect('Content-Type', /application\/json/)
             .expect(200)
         expect(response.body.message).toEqual('Successful Registration')
+    })
+
+    // [ ] Email invalidated
+    test('Email invalidated', async () => {
+        const response = await api
+            .post('/api/v1/auth/signIn')
+            .send({ email: 'a', password: '1' })
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+        expect(response.body.message).toBe('Email Invalidated')
+    })
+
+    // [ ] Username Exists
+    test('Username exists', async () => {
+        const response = await api
+            .post('/api/v1/auth/signIn')
+            .send({
+                email: '12newTest@gmail.com',
+                password: '12345678',
+                username: 'New Test'
+            })
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+        expect(response.body.message).toBe('Username Exists')
+    })
+
+    // [ ] Email Exists
+    test('Email exists', async () => {
+        const response = await api
+            .post('/api/v1/auth/signIn')
+            .send({
+                email: 'newTest@gmail.com',
+                password: '12345678',
+                username: 'New Test 2'
+            })
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+        expect(response.body.message).toBe('Email Exists')
     })
 })
 
