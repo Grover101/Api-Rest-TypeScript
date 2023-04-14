@@ -1,12 +1,9 @@
+import authController from '@controllers/auth.controller'
 import { Router } from 'express'
 
 const router = Router()
 
-router.post('/signIn', (_res, req) =>
-    req.status(200).json({ message: 'Login' })
-)
-router.post('/signUp', (_res, req) =>
-    req.status(200).json({ message: 'Register' })
-)
+router.post('/signIn', authController.login)
+router.post('/signUp', authController.register)
 
 export { router }
