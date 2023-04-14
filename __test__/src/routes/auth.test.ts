@@ -27,6 +27,28 @@ describe('POST /auth/signIn', () => {
             .expect(200)
         expect(response.body.message).toBe('Login Successful')
     })
+
+    // [ ] Email or Password Incorrect
+    test('Email or Password incorrect', async () => {
+        const response = await api
+            .post('/api/v1/auth/signIn')
+            .send({ email: 'a@a.com', password: '1' })
+            .expect('Content-Type', /application\/json/)
+            .expect(403)
+        expect(response.body.message).toBe(
+            'Incorrect Data, Email o Password incorrect'
+        )
+    })
+
+    // [ ] Eamil invalidated
+    test('Email invalidated', async () => {
+        const response = await api
+            .post('/api/v1/auth/signIn')
+            .send({ email: 'a', password: '1' })
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+        expect(response.body.message).toBe('Email Invalidated')
+    })
 })
 
 // [ ] POST /auth/signUp
