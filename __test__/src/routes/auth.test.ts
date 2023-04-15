@@ -26,9 +26,10 @@ describe('POST /auth/signIn', () => {
             .expect('Content-Type', /application\/json/)
             .expect(200)
         expect(response.body.message).toBe('Login Successful')
+        expect(response.body.token).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/)
     })
 
-    // [ ] Email or Password Incorrect
+    // [x] Email or Password Incorrect
     test('Email or Password incorrect', async () => {
         const response = await api
             .post('/api/v1/auth/signIn')
