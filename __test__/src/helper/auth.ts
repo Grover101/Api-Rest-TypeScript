@@ -31,7 +31,7 @@ export const userInit = [
 ]
 
 export const login = {
-    email: ' test@gmail.com',
+    email: 'test@gmail.com',
     password: '12345678'
 }
 
