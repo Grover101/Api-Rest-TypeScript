@@ -1,9 +1,9 @@
-import UserModel, { type User } from '@models/user'
-import { type DocumentType } from '@typegoose/typegoose'
+import UserModel, { User } from '@models/user'
 
-const insertUser = async (user: DocumentType<User>): Promise<User> => {
-    const response = await UserModel.create(user)
-    return response
+const insertUser = async (body: User): Promise<User> => {
+    const user = new UserModel(body)
+    await user.encryptPassword(user.password)
+    return await user.save()
 }
 
 const getUsers = async (): Promise<User[]> => {
