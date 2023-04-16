@@ -9,6 +9,7 @@ declare global {
             MONGO_URI_TEST: string
             MONGO_URI_PRO: string
             NODE_ENV: 'test' | 'dev' | 'prod'
+            JWT_SECRET: string
         }
     }
 }
