@@ -20,9 +20,19 @@ const signIn = async (
     return auth
 }
 
-const signUp = async (): Promise<User[]> => {
-    const user = await UserModel.find({})
-    return user
+const signUp = async (
+    username: string,
+    email: string,
+    password: string
+): Promise<User | null> => {
+    const user = await UserModel.findOne({
+        $or: [{ username }, { email }]
+    })
+    if (user) return null
+
+    const newUser = new UserModel({ username, email, password })
+    await newUser.encryptPassword(newUser.password)
+    return await newUser.save()
 }
 
 const logout = async (idUser: string) => {
