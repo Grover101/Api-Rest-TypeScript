@@ -15,6 +15,7 @@
         "paths": {
             "@routes/*": ["./src/routes/*"],
             "@controllers/*": ["./src/controllers/*"],
+            "@middlewares/*": ["./src/middlewares/*"],
             "@models/*": ["./src/models/*"],
             "@config/*": ["./src/config/*"],
             "@utils/*": ["./src/utils/*"],
