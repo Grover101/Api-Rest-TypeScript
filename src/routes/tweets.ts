@@ -1,13 +1,14 @@
-import tweetController from '@controllers/tweet.controller'
 import { Router } from 'express'
+import tweetController from '@controllers/tweet.controller'
+import { validateToken } from '@middlewares/auth'
 
 const router = Router()
 
-router.get('/', tweetController.index)
-router.get('/:id', tweetController.show)
-router.post('/', tweetController.create)
-router.post('/like/:id', tweetController.createLike)
-router.put('/:id', tweetController.update)
-router.delete('/:id', tweetController.delete)
+router.get('/', validateToken, tweetController.index)
+router.get('/:id', validateToken, tweetController.show)
+router.post('/', validateToken, tweetController.create)
+router.post('/like/:id', validateToken, tweetController.createLike)
+router.put('/:id', validateToken, tweetController.update)
+router.delete('/:id', validateToken, tweetController.delete)
 
 export { router }
