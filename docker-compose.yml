@@ -7,7 +7,7 @@ services:
     ports:
       - ${PORT_MONGO}:${PORT_MONGO_DOCKER}
     volumes:
-      - mongodb:/data/db
+      - ./mongodb:/data/db
 
   app:
     container_name: "api-rest-ts"
