@@ -1,5 +1,7 @@
 import { RequestExt } from '@interfaces/request'
+import { TokenUser } from '@interfaces/tokenUser'
 import AuthModel from '@models/auth'
+import UserModel from '@models/user'
 import { verifyToken } from '@utils/jwt.handle'
 import { NextFunction, Response } from 'express'
 
@@ -14,16 +16,19 @@ const validateToken = async (
         }
 
         const token = req.headers.authorization.split(' ')[1]
-        const tokenUser = verifyToken(token)
-        console.log(tokenUser)
+        const verify = verifyToken(token)
 
-        const user = await AuthModel.findOne({
-            where: {
-                token: token
-            }
-        }).populate('user')
+        const tokenUser = verify as TokenUser
 
-        console.log(user)
+        const auth = await AuthModel.findOne({ token })
+        if (!auth) return res.status(403).send({ message: 'Invalidate Token' })
+
+        const user = await UserModel.findOne({
+            email: tokenUser.email,
+            username: tokenUser.username
+        })
+
+        req.user = user?.id
 
         next()
     } catch (error) {
