@@ -10,14 +10,12 @@ const signIn = async (
     const user = await UserModel.findByCredentials(email, password)
     if (!user) return null
 
-    const token = await generateToken(user.username, user.email, user.role)
-
-    const auth = new AuthModel({
-        token: token,
-        expire: new Date(),
-        user
+    const token = generateToken(user.username, user.email, user.role, {
+        expiresIn: '4h'
     })
-    return auth
+
+    const auth = new AuthModel({ token, expire: new Date(), user })
+    return await auth.save()
 }
 
 const signUp = async (
