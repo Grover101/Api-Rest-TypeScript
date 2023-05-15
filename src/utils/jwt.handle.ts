@@ -1,7 +1,7 @@
-import { sign } from 'jsonwebtoken'
+import { sign, verify } from 'jsonwebtoken'
 const JWT_SECRET = process.env.JWT_SECRET || 'api_mini_twitter'
 
-const generateToken = async (
+const generateToken = (
     username: string,
     email: string,
     role: string,
@@ -10,4 +10,8 @@ const generateToken = async (
     return sign({ username, email, role }, JWT_SECRET, expire)
 }
 
-export { generateToken }
+const verifyToken = (token: string) => {
+    return verify(token, JWT_SECRET)
+}
+
+export { generateToken, verifyToken }

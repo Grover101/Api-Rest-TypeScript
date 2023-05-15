@@ -37,11 +37,5 @@ export const login = {
 
 export const TOKEN = async (): Promise<Auth | null> => {
     const user: User | null = await UserModel.findOne({ email: login.email })
-    // ! temp
-    await AuthModel.create({
-        token: '234567890',
-        expire: new Date(),
-        user: user?.id
-    })
     return await AuthModel.findOne({ user: user?.id }).populate('user')
 }
