@@ -7,7 +7,7 @@ export const userTest = {
     email: 'new@user.com',
     description: 'Es un nuevo usuario',
     website: 'https://user.new.com',
-    role: '',
+    role: 'client',
     photoUrl: 'https://xsgames.co/randomusers/avatar.php?g=male&hash=1',
     password: '123456789'
 }
