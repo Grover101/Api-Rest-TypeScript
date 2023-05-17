@@ -1,3 +1,4 @@
+import './utils/module-alias'
 import 'dotenv/config'
 import { connect } from '@config/mongo'
 import app from './app'
