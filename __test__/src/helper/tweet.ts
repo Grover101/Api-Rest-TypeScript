@@ -1,16 +1,10 @@
-import TweetModel, { type Tweet } from '@models/tweet'
+import { type Tweet } from '@models/tweet'
 import supertest from 'supertest'
 
-export const tweetInit: Tweet[] = [
-    new TweetModel({
-        message: 'Prueba para los test'
-    }),
-    new TweetModel({
-        message: 'Este es el tweet 2 de prueba'
-    }),
-    new TweetModel({
-        message: 'oh!!!, genial esto funciona'
-    })
+export const tweetInit = [
+    { message: 'Prueba para los test' },
+    { message: 'Este es el tweet 2 de prueba' },
+    { message: 'oh!!!, genial esto funciona' }
 ]
 
 export const tweetTest = {

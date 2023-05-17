@@ -1,26 +1,9 @@
-import request from 'supertest'
-
-import app from '@app'
-import { connect, close } from '@config/mongo'
-import { usersInit } from '../helper'
-import { login } from '../helper/auth'
-
-const api = request(app)
-
-beforeAll(async () => {
-    jest.setTimeout(60000)
-    await connect()
-    await usersInit()
-})
-
-afterAll(async () => {
-    await close()
-})
+import { login } from '@testHelper/auth'
 
 describe('POST /auth/signIn', () => {
-    // [ ] POST /auth/signIn
+    // [x] POST /auth/signIn
     test('Retornar token si es correcto el acceso', async () => {
-        const response = await api
+        const response = await global.api
             .post('/api/v1/auth/signIn')
             .send(login)
             .expect('Content-Type', /application\/json/)
@@ -31,7 +14,7 @@ describe('POST /auth/signIn', () => {
 
     // [x] Email or Password Incorrect
     test('Email or Password incorrect', async () => {
-        const response = await api
+        const response = await global.api
             .post('/api/v1/auth/signIn')
             .send({ email: 'a@a.com', password: '1' })
             .expect('Content-Type', /application\/json/)
@@ -43,12 +26,22 @@ describe('POST /auth/signIn', () => {
 
     // [ ] Eamil invalidated
     test('Email invalidated', async () => {
-        const response = await api
+        const response = await global.api
             .post('/api/v1/auth/signIn')
             .send({ email: 'a', password: '1' })
             .expect('Content-Type', /application\/json/)
             .expect(400)
         expect(response.body.message).toBe('Email Invalidated')
+    })
+
+    // [ ] Password invalidated
+    test('Password invalidated', async () => {
+        const response = await global.api
+            .post('/api/v1/auth/signIn')
+            .send({ email: 'a@a.com', password: '1' })
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+        expect(response.body.message).toBe('Password Invalidated')
     })
 })
 
@@ -56,7 +49,7 @@ describe('POST /auth/signIn', () => {
 describe('POST /auth/signUp', () => {
     // [ ] POST /auth/signIn
     test('Retornar token si es correcto el acceso', async () => {
-        const response = await api
+        const response = await global.api
             .post('/api/v1/auth/signUp')
             .send({
                 email: 'newTest@gmail.com',
@@ -70,7 +63,7 @@ describe('POST /auth/signUp', () => {
 
     // [ ] Email invalidated
     test('Email invalidated', async () => {
-        const response = await api
+        const response = await global.api
             .post('/api/v1/auth/signIn')
             .send({ email: 'a', password: '1' })
             .expect('Content-Type', /application\/json/)
@@ -80,7 +73,7 @@ describe('POST /auth/signUp', () => {
 
     // [ ] Username Exists
     test('Username exists', async () => {
-        const response = await api
+        const response = await global.api
             .post('/api/v1/auth/signIn')
             .send({
                 email: '12newTest@gmail.com',
@@ -94,7 +87,7 @@ describe('POST /auth/signUp', () => {
 
     // [ ] Email Exists
     test('Email exists', async () => {
-        const response = await api
+        const response = await global.api
             .post('/api/v1/auth/signIn')
             .send({
                 email: 'newTest@gmail.com',
@@ -104,6 +97,16 @@ describe('POST /auth/signUp', () => {
             .expect('Content-Type', /application\/json/)
             .expect(400)
         expect(response.body.message).toBe('Email Exists')
+    })
+
+    // [ ] Password invalidated
+    test('Password invalidated', async () => {
+        const response = await global.api
+            .post('/api/v1/auth/signIn')
+            .send({ email: 'a@a.com', password: '1' })
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+        expect(response.body.message).toBe('Password Invalidated')
     })
 })
 

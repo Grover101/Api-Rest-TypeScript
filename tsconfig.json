@@ -11,18 +11,25 @@
         "moduleResolution": "node",
         "checkJs": true,
         "outDir": "build",
-        "baseUrl": ".",
+        "baseUrl": "./",
         "paths": {
-            "@routes/*": ["./src/routes/*"],
-            "@controllers/*": ["./src/controllers/*"],
-            "@middlewares/*": ["./src/middlewares/*"],
-            "@models/*": ["./src/models/*"],
-            "@config/*": ["./src/config/*"],
-            "@utils/*": ["./src/utils/*"],
-            "@interfaces/*": ["./src/interfaces/*"],
-            "@services/*": ["./src/services/*"],
-            "@app": ["./src/app.ts"]
+            "@routes/*": ["src/routes/*"],
+            "@controllers/*": ["src/controllers/*"],
+            "@middlewares/*": ["src/middlewares/*"],
+            "@models/*": ["src/models/*"],
+            "@config/*": ["src/config/*"],
+            "@utils/*": ["src/utils/*"],
+            "@interfaces/*": ["src/interfaces/*"],
+            "@services/*": ["src/services/*"],
+            "@testHelper/*": ["__test__/src/helper/*"],
+            "@app": ["src/app.ts"]
         },
+        "plugins": [
+            {
+                "name": "tsconfig-paths",
+                "afterDeclarations": true
+            }
+        ],
         "typeRoots": ["./node_modules/@types", "./src/config/@types"],
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
