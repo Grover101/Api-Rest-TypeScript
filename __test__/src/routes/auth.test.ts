@@ -33,6 +33,16 @@ describe('POST /auth/signIn', () => {
             .expect(400)
         expect(response.body.message).toBe('Email Invalidated')
     })
+
+    // [ ] Password invalidated
+    test('Password invalidated', async () => {
+        const response = await global.api
+            .post('/api/v1/auth/signIn')
+            .send({ email: 'a@a.com', password: '1' })
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+        expect(response.body.message).toBe('Password Invalidated')
+    })
 })
 
 // [ ] POST /auth/signUp
@@ -87,6 +97,16 @@ describe('POST /auth/signUp', () => {
             .expect('Content-Type', /application\/json/)
             .expect(400)
         expect(response.body.message).toBe('Email Exists')
+    })
+
+    // [ ] Password invalidated
+    test('Password invalidated', async () => {
+        const response = await global.api
+            .post('/api/v1/auth/signIn')
+            .send({ email: 'a@a.com', password: '1' })
+            .expect('Content-Type', /application\/json/)
+            .expect(400)
+        expect(response.body.message).toBe('Password Invalidated')
     })
 })
 
