@@ -1,3 +1,4 @@
+import { RequestExt } from '@interfaces/request'
 import {
     deleteTweet,
     getTweetId,
@@ -28,9 +29,12 @@ export default {
             handleHttp(res, 'Error in the request')
         }
     },
-    async create({ body }: Request, res: Response) {
+    async create({ userId, body }: RequestExt, res: Response) {
         try {
-            const tweet = await insertTweet(body)
+            if (userId === null || userId === undefined)
+                return res.status(400).json({ message: 'Error id User' })
+
+            const tweet = await insertTweet(userId, body)
             return res.status(201).json(tweet)
         } catch (error) {
             handleHttp(res, 'Error in the request', error)
