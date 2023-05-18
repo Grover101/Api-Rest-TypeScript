@@ -58,4 +58,33 @@ const validateTokenPassUserId = async (
     }
 }
 
-export { validateToken, validateTokenPassUserId }
+const validateAccessRoot = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        if (!req.headers.authorization) {
+            return res.status(403).send({ message: 'Token is required' })
+        }
+
+        const token = req.headers.authorization.split(' ')[1]
+        const verify = verifyToken(token)
+        const tokenUser = verify as TokenUser
+
+        const user = await UserModel.findOne({
+            email: tokenUser.email,
+            username: tokenUser.username,
+            role: tokenUser.role
+        })
+
+        if (user && user.role === 'admin') next()
+        else return res.status(403).send({ message: 'No tienes autorización' })
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Error in the request - Permission'
+        })
+    }
+}
+
+export { validateToken, validateTokenPassUserId, validateAccessRoot }
