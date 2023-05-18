@@ -40,10 +40,12 @@ export default {
             handleHttp(res, 'Error in the request', error)
         }
     },
-    async createLike({ body, params }: Request, res: Response) {
+    async createLike({ userId, params }: RequestExt, res: Response) {
         try {
-            // [ ] Pasar id user por token y cuando este autenticado
-            const tweet = await insertLikes(body.idUser, params.id)
+            if (userId === null || userId === undefined)
+                return res.status(400).json({ message: 'Error id User' })
+
+            const tweet = await insertLikes(userId, params.id)
             return res.status(200).json({ tweet })
         } catch (error) {
             handleHttp(res, 'Error in the request')
