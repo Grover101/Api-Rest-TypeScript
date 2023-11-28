@@ -11,7 +11,7 @@ import { handleHttp } from '@utils/error.handle'
 import { type Request, type Response } from 'express'
 
 export default {
-    async index(_req: Request, res: Response) {
+    async index(_req: Request, res: Response): Promise<Response | undefined> {
         try {
             const tweets = await getTweets()
             return res.status(200).json(tweets)
@@ -19,7 +19,10 @@ export default {
             handleHttp(res, 'Error in the request')
         }
     },
-    async show({ params }: Request, res: Response) {
+    async show(
+        { params }: Request,
+        res: Response
+    ): Promise<Response | undefined> {
         try {
             const tweet = await getTweetId(params.id)
             return tweet
@@ -29,7 +32,10 @@ export default {
             handleHttp(res, 'Error in the request')
         }
     },
-    async create({ userId, body }: RequestExt, res: Response) {
+    async create(
+        { userId, body }: RequestExt,
+        res: Response
+    ): Promise<Response | undefined> {
         try {
             if (userId === null || userId === undefined)
                 return res.status(400).json({ message: 'Error id User' })
@@ -40,7 +46,10 @@ export default {
             handleHttp(res, 'Error in the request', error)
         }
     },
-    async createLike({ userId, params }: RequestExt, res: Response) {
+    async createLike(
+        { userId, params }: RequestExt,
+        res: Response
+    ): Promise<Response | undefined> {
         try {
             if (userId === null || userId === undefined)
                 return res.status(400).json({ message: 'Error id User' })
@@ -51,7 +60,10 @@ export default {
             handleHttp(res, 'Error in the request')
         }
     },
-    async update({ body, params }: Request, res: Response) {
+    async update(
+        { body, params }: Request,
+        res: Response
+    ): Promise<Response | undefined> {
         try {
             const tweet = await updateTweet(params.id, body)
             return tweet
@@ -61,7 +73,10 @@ export default {
             handleHttp(res, 'Error in the request')
         }
     },
-    async delete({ params }: Request, res: Response) {
+    async delete(
+        { params }: Request,
+        res: Response
+    ): Promise<Response | undefined> {
         try {
             const tweet = await deleteTweet(params.id)
             return tweet
