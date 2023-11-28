@@ -2,12 +2,13 @@ version: '3.9'
 
 services:
   mongo:
-    image: mongo
+    image: grover101/mongo-alpine
     restart: always
     ports:
       - ${PORT_MONGO}:${PORT_MONGO_DOCKER}
     volumes:
       - ./mongodb:/data/db
+      - ./mongodb_config:/data/configdb
 
   app:
     container_name: "api-rest-ts"
@@ -21,6 +22,6 @@ services:
     links:
       - mongo
     volumes:
-      - .:/home/Api-Rest-TypeScript
+      - .:/home/app
 volumes:
   mongodb:
